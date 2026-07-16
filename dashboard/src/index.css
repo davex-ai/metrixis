@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+@theme {
+  /* --- Metrixis design tokens --- */
+  --color-ink: #0b0e14;         /* app background */
+  --color-panel: #12161f;       /* card/panel surface */
+  --color-panel-raised: #171c27;
+  --color-line: #232936;        /* borders/dividers */
+  --color-paper: #e8eaed;       /* primary text */
+  --color-muted: #838b9c;       /* secondary text */
+  --color-signal: #6ee7b7;      /* live/positive accent (mint) */
+  --color-signal-dim: #3f8f72;
+  --color-warn: #f2b879;        /* secondary metric accent (amber) */
+  --color-danger: #f2879a;      /* negative delta */
+
+  --font-display: "IBM Plex Mono", "JetBrains Mono", ui-monospace, monospace;
+  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-ink);
+    color: var(--color-paper);
+    font-family: var(--font-body);
+  }
+}
