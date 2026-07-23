@@ -9,6 +9,7 @@ const authRoutes = require('./routes/auth');
 const sitesRoutes = require('./routes/sites');
 const collectRoutes = require('./routes/collect');
 const statsRoutes = require('./routes/stats');
+const internalRoutes = require('./routes/internal');
 
 const app = express();
 
@@ -41,6 +42,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/sites', sitesRoutes);
 app.use('/api/collect', collectRoutes);
 app.use('/api/stats', statsRoutes);
+app.use('/api/internal', internalRoutes);
 
 // Public tracking script — served with a long cache lifetime is tempting,
 // but keep it short for now so updates to tracker.js reach sites quickly.
