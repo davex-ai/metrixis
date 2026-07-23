@@ -18,6 +18,24 @@ app.use(express.json());
 app.use(
   cors({
     origin: process.env.DASHBOARD_URL || 'http://localhost:5173',
+<<<<<<< HEAD
+=======
+    credentials: true, // required so the session cookie is sent cross-origin
+  })
+);
+
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+   cookie: {
+  httpOnly: true,
+  secure: true, // required for sameSite: 'none', and you're always on HTTPS in production
+  sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+  maxAge: 1000 * 60 * 60 * 24 * 7,
+}
+>>>>>>> d622eab35dcd2fc39df44bd7908f5ed65d36de80
   })
 );
 
