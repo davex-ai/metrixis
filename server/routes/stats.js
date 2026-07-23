@@ -1,11 +1,7 @@
 const express = require('express');
 const pool = require('../db/pool');
-const requireAuth = require('../middleware/requireAuth');
-const { getOwnedSite } = require('../utils/ownership');
 
 const router = express.Router();
-
-router.use(requireAuth);
 
 // Accepts ?range=7d | 30d | 90d | month  — defaults to 30d
 function resolveDateRange(range) {
@@ -16,16 +12,19 @@ function resolveDateRange(range) {
 }
 
 /**
- * Middleware-style helper: confirms :siteId belongs to the logged-in user
- * before letting a route handler run. Attaches the site to req.site.
+ * Loads the site for :siteId and attaches it to req.site, or 404s.
+ * No ownership check anymore — dashboard has no auth, so any site
+ * in the database is fair game for anyone with the dashboard URL.
  */
-async function loadOwnedSite(req, res, next) {
+async function loadSite(req, res, next) {
   try {
-    const site = await getOwnedSite(req.params.siteId, req.session.userId);
-    if (!site) {
+    const result = await pool.query('SELECT id, name, domain, tracking_id FROM sites WHERE id = $1', [
+      req.params.siteId,
+    ]);
+    if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Site not found' });
     }
-    req.site = site;
+    req.site = result.rows[0];
     next();
   } catch (err) {
     console.error('Load site error:', err);
@@ -33,7 +32,7 @@ async function loadOwnedSite(req, res, next) {
   }
 }
 
-router.use('/:siteId', loadOwnedSite);
+router.use('/:siteId', loadSite);
 
 // ── GET /api/stats/:siteId/overview?range=30d ──
 // Daily pageviews/visitors/sessions for charting, plus totals.

@@ -4,5 +4,3 @@ dist/
 .env.local
 *.log
 .DS_Store
-README.md
-psql "postgresql://postgres.oelljjypfmkpkijllwbb:fdgsfhjbgfvcdsxghjb@aws-0-eu-west-1.pooler.supabase.com:5432/postgres"  -f server/db/schema.sql

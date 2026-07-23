@@ -1,15 +1,6 @@
-import { NavLink, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { NavLink } from 'react-router-dom';
 
 export default function Sidebar({ sites }) {
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
-
-  async function handleLogout() {
-    await logout();
-    navigate('/login');
-  }
-
   return (
     <aside className="sidebar">
       <div className="sidebar-brand">metrixis</div>
@@ -32,13 +23,6 @@ export default function Sidebar({ sites }) {
       <NavLink to="/sites/new" className="sidebar-add">
         + Add site
       </NavLink>
-
-      <div className="sidebar-footer">
-        <span className="sidebar-user">{user?.email}</span>
-        <button className="sidebar-logout" onClick={handleLogout}>
-          Log out
-        </button>
-      </div>
     </aside>
   );
 }

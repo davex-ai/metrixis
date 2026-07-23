@@ -2,29 +2,16 @@
 -- Run with: psql $DATABASE_URL -f db/schema.sql
 
 -- ─────────────────────────────────────────────
--- Dashboard users (people who log in to Metrixis)
--- ─────────────────────────────────────────────
-CREATE TABLE IF NOT EXISTS users (
-  id            SERIAL PRIMARY KEY,
-  email         TEXT NOT NULL UNIQUE,
-  password_hash TEXT NOT NULL,
-  created_at    TIMESTAMPTZ NOT NULL DEFAULT now()
-);
-
--- ─────────────────────────────────────────────
--- Tracked websites, each owned by a user
+-- Tracked websites
 -- tracking_id is public (embedded in the client-side script)
 -- ─────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS sites (
   id           SERIAL PRIMARY KEY,
-  user_id      INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   name         TEXT NOT NULL,
   domain       TEXT NOT NULL,
   tracking_id  TEXT NOT NULL UNIQUE, -- e.g. "mtx_ab12cd34..."
   created_at   TIMESTAMPTZ NOT NULL DEFAULT now()
 );
-
-CREATE INDEX IF NOT EXISTS idx_sites_user_id ON sites(user_id);
 
 -- ─────────────────────────────────────────────
 -- Raw events — append-only firehose.

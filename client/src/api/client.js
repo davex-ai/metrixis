@@ -1,16 +1,16 @@
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
 
 /**
- * Wraps fetch with:
- *  - credentials: 'include' so the session cookie is sent (required for auth)
- *  - JSON body/parsing
- *  - throws a normal Error with the server's message on non-2xx responses,
- *    so callers can just try/catch instead of checking res.ok everywhere
+ * Wraps fetch with JSON body/parsing and throws a normal Error with the
+ * server's message on non-2xx responses, so callers can just try/catch
+ * instead of checking res.ok everywhere.
+ *
+ * No auth, no cookies — this dashboard has no login, so every request
+ * is anonymous. Anyone with the dashboard URL can see and manage all sites.
  */
 async function request(path, { method = 'GET', body } = {}) {
   const res = await fetch(`${API_BASE}${path}`, {
     method,
-    credentials: 'include',
     headers: body ? { 'Content-Type': 'application/json' } : undefined,
     body: body ? JSON.stringify(body) : undefined,
   });
@@ -26,12 +26,6 @@ async function request(path, { method = 'GET', body } = {}) {
 }
 
 export const api = {
-  // Auth
-  signup: (email, password) => request('/api/auth/signup', { method: 'POST', body: { email, password } }),
-  login: (email, password) => request('/api/auth/login', { method: 'POST', body: { email, password } }),
-  logout: () => request('/api/auth/logout', { method: 'POST' }),
-  me: () => request('/api/auth/me'),
-
   // Sites
   listSites: () => request('/api/sites'),
   createSite: (name, domain) => request('/api/sites', { method: 'POST', body: { name, domain } }),

@@ -3,8 +3,16 @@ const { aggregateDate, yesterdayUTC } = require('../jobs/aggregate');
 
 const router = express.Router();
 
-// Protects this route with a shared secret instead of user auth,
-// since it's meant to be called by an external cron pinger, not a browser.
+/**
+ * POST /api/internal/aggregate
+ *
+ * Triggers the daily rollup job over HTTP instead of a Render Cron service
+ * (which isn't free). Point a free external scheduler — e.g. cron-job.org —
+ * at this endpoint once a day.
+ *
+ * Protected by a shared secret header, not user auth (there isn't any),
+ * since this is meant to be called by a script, not a browser.
+ */
 router.post('/aggregate', async (req, res) => {
   const secret = req.headers['x-cron-secret'];
   if (!secret || secret !== process.env.CRON_SECRET) {

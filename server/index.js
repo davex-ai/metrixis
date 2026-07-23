@@ -1,11 +1,9 @@
 require('dotenv').config();
 
 const express = require('express');
-const session = require('express-session');
 const cors = require('cors');
-
 const path = require('path');
-const authRoutes = require('./routes/auth');
+
 const sitesRoutes = require('./routes/sites');
 const collectRoutes = require('./routes/collect');
 const statsRoutes = require('./routes/stats');
@@ -16,29 +14,14 @@ const app = express();
 // ── Core middleware ──
 app.use(express.json());
 
+// No auth, no cookies — CORS can be a plain allow-list without credentials.
 app.use(
   cors({
     origin: process.env.DASHBOARD_URL || 'http://localhost:5173',
-    credentials: true, // required so the session cookie is sent cross-origin
-  })
-);
-
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // requires HTTPS in prod
-      sameSite: 'lax',
-      maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-    },
   })
 );
 
 // ── Routes ──
-app.use('/api/auth', authRoutes);
 app.use('/api/sites', sitesRoutes);
 app.use('/api/collect', collectRoutes);
 app.use('/api/stats', statsRoutes);

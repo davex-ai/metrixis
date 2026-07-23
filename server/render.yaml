@@ -1,0 +1,21 @@
+services:
+  # API server (Express).
+  # Daily aggregation runs via an external free scheduler (e.g. cron-job.org)
+  # hitting POST /api/internal/aggregate — no paid Render Cron Job needed.
+  - type: web
+    name: metrixis-api
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node index.js
+    envVars:
+      - key: DATABASE_URL
+        sync: false # set manually from Supabase connection string
+      - key: CRON_SECRET
+        generateValue: true # used to authenticate the external cron pinger
+      - key: DASHBOARD_URL
+        value: https://metrixis.vercel.app
+      - key: NODE_ENV
+        value: production
+      - key: PGSSL
+        value: "true"
