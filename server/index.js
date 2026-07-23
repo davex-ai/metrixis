@@ -28,12 +28,12 @@ app.use(
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    cookie: {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // requires HTTPS in prod
-      sameSite: 'lax',
-      maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-    },
+   cookie: {
+  httpOnly: true,
+  secure: true, // required for sameSite: 'none', and you're always on HTTPS in production
+  sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+  maxAge: 1000 * 60 * 60 * 24 * 7,
+}
   })
 );
 
